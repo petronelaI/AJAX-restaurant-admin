@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<style>
+	   	body,
+	   	html {
+	       	margin: 20px 50px 0 50px;
+	       	padding: 0;
+	       	background-color: #ccf5ff;
+	       	font-size: 22px;
+	   	}
+
+	   	#header {
+	   		margin: 10px 15px 100px 15px;
+	   	}
+
+	   	a:link {
+		  text-decoration: none;
+		}
+
+	   	h1 {
+	       	display: inline;
+	       	font-size: 50px;
+	   	}
+
+	   	#titluPagina {
+	   		font-size: 45px;
+	   		color: black;
+	   	}
+
+		table {
+		    font-family: arial, sans-serif;
+		    border-collapse: collapse;
+		    width: 100%;
+		}
+		.modificaReteta, .stergeReteta {
+			background-color: #ff8080;
+			height: 50px;
+			width: 100px;
+			margin: 5px;
+			border: none;
+			border-radius: 50px;
+		}
+
+		.adaugaReteta {
+			font-size: 15px;
+			background-color:#66a3ff;
+			border-radius: 10px;
+			height: 50px;
+			width: 200px;
+			border: none;
+	       	display: inline;
+	       	float: right;
+		}
+
+		.loading{
+			margin: 0 auto;
+			width: 300px;
+			display: block;
+		}
+
+	</style>
+	<script>
+		var reteteRestaurant=[];
+		console.log(reteteRestaurant);
+
+		function getMeniu(){
+				var xhttp = new XMLHttpRequest();
+				xhttp.onreadystatechange = function() {
+					if (this.readyState == 4 && this.status == 200) {
+					   reteteRestaurant = JSON.parse(this.responseText);
+					   deseneazaTabel();
+					}
+				};
+				xhttp.open("GET", "https://restaurant-1942e.firebaseio.com/.json", true);
+				xhttp.send();
+		}
+
+		function deseneazaTabel(){
+			var str = "";
+            for(var i in reteteRestaurant){	 
+            	if(reteteRestaurant[i]===null){
+            		continue;
+            	}else{
+					str += `<tr class="mainTable">
+		                           	<td style="float: left; width:10%;"><img width="150" src="${reteteRestaurant[i].imagine}"/></td>
+		                            <td style="float: left; width: 46%; display: inline; padding: 10px;"><strong>${reteteRestaurant[i].nume}</strong><br/><span style="display: inline;">${reteteRestaurant[i].ingrediente}<span></td>
+		                            <td style="float: right; width: 34%; display: inline;">
+		                                <button class="modificaReteta" style="float: right; width: 17%; display: inline;"><a href="modifica2.html?id=${i}" style="color: white; font-weight: bold;">Modifica</a></button>
+		                                <button class="stergeReteta" style="float: right; width: 17%; display: inline;"><a href="sterge.html?id=${i}" style="color: white; font-weight: bold;">Sterge</a></button>
+		                            </td>   
+                    		</tr>`;
+            	}
+            
+            }
+			console.log(str);
+			document.querySelector("table").innerHTML=str;
+			document.querySelector("#loadingGif").style.display="none";
+		}
+
+	</script>
+</head>
+	<body onload="getMeniu();">
+		<div id="loadingGif">
+			<img class="loading" src="https://static.wixstatic.com/media/2b68bd_2121cf409c7942698a7232d5e2db4774~mv2.gif"/>
+		</div>
+
+		<div id="header">
+			<a href="restaurantAdmin.html"><h1 id="titluPagina">Cald si bun (Admin)</h1></a>
+			<button class="adaugaReteta"><a href="adauagaReteta.html" style="color: white; font-weight: bold;">Adauga reteta noua</a></button>
+		</div>
+		<table></table>
+	</body>
+</html>

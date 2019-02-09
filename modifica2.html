@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<style>
+	   	body,
+	   	html {
+	       	margin: 20px 50px 0 50px;
+	       	padding: 0;
+	       	background-color: #ccf5ff;
+	       	font-size: 22px;
+	   	}
+
+	   	#header {
+	   		margin: 10px 15px 100px 15px;
+	   	}
+
+	   	a:link {
+		  text-decoration: none;
+		}
+
+	   	h1 {
+	       	display: inline;
+	       	font-size: 50px;
+	   	}
+
+	   	#titluPagina {
+	   		font-size: 45px;
+	   		color: black;
+	   	}
+
+		.salveazaPreparat {
+			font-size: 15px;
+			background-color:#66a3ff;
+			height: 50px;
+			width: 200px;
+			border: none;
+			color: white;
+			padding: 14px 20px;
+			margin: 8px 0;
+			border-radius: 5px;
+			cursor: pointer;
+		}
+
+		#detaliiReteta {
+			border-radius: 5px;
+			background-color: #f2f2f2;
+			padding: 20px;
+		}
+
+		input[type=text], select {
+			width: 100%;
+			padding: 12px 20px;
+			margin: 8px 0;
+			display: inline-block;
+			border: 1px solid #ccc;
+			border-radius: 4px;
+			box-sizing: border-box;
+		}
+
+		.loading{
+			margin: 0 auto;
+			width: 300px;
+			display: block;
+		}
+
+	</style>
+	<script>
+
+		var reteteRestaurant=[];
+		console.log(reteteRestaurant);
+		var id = location.search.substring(4);
+
+		function getMeniu(){
+				var xhttp = new XMLHttpRequest();
+				xhttp.onreadystatechange = function() {
+					if (this.readyState == 4 && this.status == 200) {
+					   reteteRestaurant = JSON.parse(this.responseText);
+					   deseneazaTabel();
+					}
+				};
+				xhttp.open("GET", `https://restaurant-1942e.firebaseio.com/${id}.json`, true);
+				xhttp.send();
+		}
+
+		function deseneazaTabel(){
+				document.getElementById("urlImagine").value=reteteRestaurant.imagine;
+                document.getElementById("numeReteta").value=reteteRestaurant.nume;
+                document.getElementById("ingredienteReteta").value=reteteRestaurant.ingrediente;
+                document.getElementById("ModDePreparare").value=reteteRestaurant.reteta;
+                document.querySelector("#loadingGif").style.display="none";
+		}
+
+
+		function editeaza(id){
+			var reteteEditate = {};
+			var inputs = document.querySelectorAll("input[name]");
+			for(var i=0;i<inputs.length;i++){
+				var a = inputs[i].getAttribute("name");
+				var b = inputs[i].value;
+				reteteEditate[b]=c; 	
+			}
+			var xhttp = new XMLHttpRequest();
+				xhttp.onreadystatechange = function() {
+					if (this.readyState == 4 && this.status == 200) {
+					   window.location = "restaurantAdmin.html";
+					}
+				};
+				xhttp.open("PUT", `https://restaurant-1942e.firebaseio.com/${id}.json`, true);
+				xhttp.send(JSON.stringify(reteteEditate));
+		}
+
+	</script>
+</head>
+	<body onload="getMeniu();">
+		<div id="loadingGif">
+			<img class="loading" src="https://static.wixstatic.com/media/2b68bd_2121cf409c7942698a7232d5e2db4774~mv2.gif"/>
+		</div>
+
+		<div id="header">
+			<a href="restaurantAdmin.html"><h1 id="titluPagina">Cald si bun (Admin)</h1></a>
+		</div>
+
+		<div id="detaliiReteta">
+			<form id="retetaModificata" onsubmit="editeaza()">
+				<label for="numeReteta">Nume: </label>
+			    <input type="text" id="numeReteta" name="nume"/><br>
+
+			    <label for="urlImagine">URL Imagine: </label>
+			    <input type="text" id="urlImagine" name="imagine" /><br>
+
+			    <label for="ingredienteReteta">Ingrediente: </label>
+                <input type="text" id="ingredienteReteta" name="ingrediente" style="height:100px"/>
+
+                <label for="ModDePreparare">Mod de preparare: </label>
+                <input type="text" id="ModDePreparare" name="reteta"  style="height:100px"/>
+
+                <input type="submit" class="salveazaPreparat" value="Salveaza preparat" style="color: white; font-weight: bold;"/>
+			</form>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<style>
+	   	body,
+	   	html {
+	       	margin: 20px 50px 0 50px;
+	       	padding: 0;
+	       	background-color: #ccf5ff;
+	       	font-size: 22px;
+	   	}
+
+	   	#header {
+	   		margin: 10px 15px 100px 15px;
+	   	}
+
+	   	a:link {
+		  text-decoration: none;
+		}
+
+	   	h1 {
+	       	display: inline;
+	       	font-size: 50px;
+	   	}
+
+	   	#titluPagina {
+	   		font-size: 45px;
+	   		color: black;
+	   	}
+	   	#stergeReteta {
+			border-radius: 20px;
+			background-color: #f2f2f2;
+			padding: 20px;
+			width: 50%; 
+		}
+
+		p {
+			font-size: 25px;
+		}
+
+		.daSterge, .nuSterge {
+			font-size: 15px;
+			background-color:#66a3ff;
+			height: 50px;
+			width: 100px;
+			border: none;
+			color: white;
+			padding: 14px 20px;
+			margin: 8px 0;
+			border-radius: 5px;
+			cursor: pointer;
+		}
+
+		.loading{
+			margin: 0 auto;
+			width: 300px;
+			display: block;
+		}
+
+	</style>
+	<script>
+
+		var reteteRestaurant=[];
+		console.log(reteteRestaurant);
+		var id = location.search.substring(4);
+
+		function getMeniu(){
+				var xhttp = new XMLHttpRequest();
+				xhttp.onreadystatechange = function() {
+					if (this.readyState == 4 && this.status == 200) {
+					   reteteRestaurant = JSON.parse(this.responseText);
+					   deseneazaTabel();
+					}
+				};
+				xhttp.open("GET", `https://restaurant-1942e.firebaseio.com/${id}.json`, true);
+				xhttp.send();
+		}
+
+		function sterge(){
+			var xhttp = new XMLHttpRequest();
+			xhttp.onreadystatechange = function() {
+				if (this.readyState == 4 && this.status == 200) {
+					window.location = "restaurantAdmin.html";
+				    getMeniu();
+				}
+			};
+			xhttp.open("DELETE", `https://restaurant-1942e.firebaseio.com/${id}.json`, true);
+			xhttp.send();
+		}
+
+		function anuleazaStergerea () {
+			var xhttp = new XMLHttpRequest();
+			xhttp.onreadystatechange = function() {
+				if (this.readyState == 4 && this.status == 200) {
+				   window.location = "restaurantAdmin.html";
+				}
+			};
+			xhttp.open("GET", `https://restaurant-1942e.firebaseio.com/.json`, true);
+			xhttp.send();
+		}
+
+		function deseneazaTabel () {
+			document.getElementById('retetaNume').innerHTML = reteteRestaurant.nume;
+			document.querySelector("#loadingGif").style.display="none";
+		}
+		
+	</script>
+</head>
+	<body onload="getMeniu();">
+		<div id="loadingGif">
+			<img class="loading" src="https://static.wixstatic.com/media/2b68bd_2121cf409c7942698a7232d5e2db4774~mv2.gif"/>
+		</div>	
+
+		<div id="header">
+			<a href="restaurantAdmin.html"><h1 id="titluPagina">Cald si bun (Admin)</h1></a>
+		</div>
+
+		<div id="stergeReteta">
+			  	<p>Esti pe cale sa stergi preparatul: "<span id="retetaNume"></span>"</p>
+			  	<p>Confirmi stergerea?</h2><br><br>
+			    <button class="daSterge" onclick="sterge();" style="color: white; font-weight: bold;">DA</button>
+			    <button class="nuSterge" onclick="anuleazaStergerea ();" style="color: white; font-weight: bold;">NU</button>
+			</form>
+		</div>
+	</body>
+</html>
